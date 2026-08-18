@@ -1,0 +1,9 @@
+{
+  "name": "skillset-engineering",
+  "version": "0.1.0",
+  "description": "Gladewick engineering skills — frame budgets, desyncs, save migrations, shard capacity",
+  "author": {
+    "name": "Gladewick Games"
+  },
+  "skills": ["./skills/"]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "skillset-viewer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "diff": "^9.0.0",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.0",
+    "nuxt": "~3.13.2",
+    "vis-data": "^7.1.9",
+    "vis-network": "^9.1.9",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/diff": "^7.0.2",
+    "vitest": "^2.1.0"
+  }
+}

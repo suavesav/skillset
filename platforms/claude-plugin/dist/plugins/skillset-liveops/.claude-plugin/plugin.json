@@ -1,0 +1,9 @@
+{
+  "name": "skillset-liveops",
+  "version": "0.1.0",
+  "description": "Gladewick live-ops skills — launch runbooks, matchmaking, community pulse, daily briefings",
+  "author": {
+    "name": "Gladewick Games"
+  },
+  "skills": ["./skills/"]
+}

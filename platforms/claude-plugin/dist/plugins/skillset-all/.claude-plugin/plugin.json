@@ -1,0 +1,9 @@
+{
+  "name": "skillset-all",
+  "version": "0.1.0",
+  "description": "Gladewick Games AI skills — dev workflow, live-ops analytics, design tooling",
+  "author": {
+    "name": "Gladewick Games"
+  },
+  "skills": ["./skills/"]
+}

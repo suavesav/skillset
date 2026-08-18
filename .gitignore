@@ -1,0 +1,12 @@
+local/
+
+.DS_Store
+*.swp
+*.swo
+*~
+viewer/node_modules/
+viewer/.nuxt/
+viewer/.output/
+viewer/dist/
+platforms/claude-desktop/generated/
+.idea

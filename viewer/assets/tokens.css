@@ -1,0 +1,49 @@
+/* Radiant design tokens — the ONE source of brand truth.
+   Components read these vars; callers never pass raw colors/padding. */
+:root {
+  /* Gladewick brand */
+  --r-pine: #15803d;
+  --r-pine-600: #166534;
+  --r-pine-700: #14532d;
+  --r-violet: #7c3aed;
+  --r-violet-soft: #c4b5fd;
+  --r-ink: #191919;
+  --r-ink-2: #4a4a4a;
+  --r-muted: #6b6b6b;
+  --r-line: #dfe6df;
+  --r-surface: #ffffff;
+  --r-surface-2: #f6f8f6;
+  --r-surface-3: #edf2ed;
+
+  /* diff / status semantics — legible on the warm-paper surfaces */
+  --r-add: #1a7f37;
+  --r-add-bg: rgba(26, 127, 55, 0.12);
+  --r-del: #b42318;
+  --r-del-bg: rgba(180, 35, 24, 0.10);
+  --r-chg: #6d28d9;
+  --r-chg-bg: rgba(124, 58, 237, 0.14);
+
+  /* type scale */
+  --r-font: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --r-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --r-fs-hero: clamp(2.4rem, 5vw, 4rem);
+  --r-fs-h2: clamp(1.5rem, 2.5vw, 2.1rem);
+  --r-fs-h3: 1.2rem;
+  --r-fs-body: 1rem;
+  --r-fs-sm: 0.8125rem;
+
+  /* spacing scale (8pt) */
+  --r-1: 4px; --r-2: 8px; --r-3: 12px; --r-4: 16px; --r-5: 24px;
+  --r-6: 32px; --r-7: 48px; --r-8: 64px; --r-9: 96px;
+
+  /* radius / elevation / motion */
+  --r-radius-sm: 8px;
+  --r-radius: 14px;
+  --r-radius-lg: 22px;
+  --r-radius-pill: 999px;
+  --r-shadow-1: 0 1px 2px rgba(25, 25, 25, 0.06), 0 2px 8px rgba(25, 25, 25, 0.05);
+  --r-shadow-2: 0 8px 24px rgba(20, 83, 45, 0.12);
+  --r-shadow-3: 0 18px 48px rgba(20, 83, 45, 0.18);
+  --r-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --r-dur: 0.28s;
+}
