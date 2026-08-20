@@ -10,15 +10,17 @@
         <option value="claude-desktop">claude-desktop</option>
       </select>
     </div>
+
     <div class="search">
       <input v-model="filter" type="text" placeholder="Filter by name…" />
       <button v-if="filter" class="clear" @click="filter = ''" title="Clear">×</button>
     </div>
     <div v-if="pending" class="hint">Loading…</div>
+    <div v-else-if="error" class="hint err">{{ error }}</div>
     <ul v-else-if="!filter.trim()" class="root">
       <TreeNode
         v-for="node in tree"
-        :key="node.path"
+        :key="node.key"
         :node="node"
         :selected="selectedPath"
         @select="onSelect"
@@ -42,40 +44,47 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import type { ProjectionEntry, ProjectionResponse, Platform } from '../shared/types'
+import type { ProjectionEntry, ProjectionResponse } from '../shared/types'
+import { buildTree, type TreeNodeData } from '../shared/tree'
 import { useTeamFilter } from '../composables/useTeamFilter'
 import { useViewerSettings } from '../composables/useViewerSettings'
 
-interface TreeNode {
-  name: string
-  path: string                // full projected path
+export interface SelectedEntry {
+  projectedPath: string
   sourcePath: string | null
   synthesized?: boolean
   note?: string
-  children?: TreeNode[]
-  isDir: boolean
+  /** The click landed on a bundle input, not a projected file. */
+  isInput?: boolean
 }
 
-const props = defineProps<{ selectedPath: string | null }>()
-const emit = defineEmits<{
-  (e: 'select', entry: { projectedPath: string; sourcePath: string | null; synthesized?: boolean; note?: string }): void
-}>()
+defineProps<{ selectedPath: string | null }>()
+const emit = defineEmits<{ (e: 'select', entry: SelectedEntry): void }>()
 
 const settings = useViewerSettings() // persisted platform selection
 const entries = ref<ProjectionEntry[]>([])
 const pending = ref(false)
 const filter = ref('')
+const error = ref('')
 const { closure } = useTeamFilter() // global team filter
 
-// Entries surviving the team filter: keep a projected file when its library
-// source is in the selected team's closure; synthesized manifests always stay.
-const teamEntries = computed(() => {
+function basename(p: string): string {
+  const i = p.lastIndexOf('/')
+  return i === -1 ? p : p.slice(i + 1)
+}
+
+/** The closure only knows library files; platform sources are never in it. */
+function inClosure(sourcePath: string): boolean {
   const c = closure.value
-  if (!c) return entries.value
-  return entries.value.filter((e) => {
-    if (!e.sourcePath) return true
-    return c.has(basename(e.sourcePath).replace(/\.md$/, ''))
-  })
+  if (!c) return true
+  if (!/^(SKILLS|AGENTS|KNOWLEDGE)\//.test(sourcePath)) return true
+  return c.has(basename(sourcePath).replace(/\.md$/, ''))
+}
+
+// Bundles always survive; their inputs are filtered instead (keepInput below).
+const teamEntries = computed(() => {
+  if (!closure.value) return entries.value
+  return entries.value.filter((e) => !e.sourcePath || inClosure(e.sourcePath))
 })
 
 const filtered = computed(() => {
@@ -85,11 +94,6 @@ const filtered = computed(() => {
     .filter((e) => basename(e.projectedPath).toLowerCase().includes(q))
     .sort((a, b) => basename(a.projectedPath).localeCompare(basename(b.projectedPath)))
 })
-
-function basename(p: string): string {
-  const i = p.lastIndexOf('/')
-  return i === -1 ? p : p.slice(i + 1)
-}
 
 function highlightMatch(name: string): string {
   const q = filter.value.trim()
@@ -112,72 +116,39 @@ function onFlatSelect(entry: ProjectionEntry) {
   })
 }
 
+// Bumped per platform switch, so a slow load cannot paint over a newer one.
+let loadSeq = 0
+
 async function load() {
+  const seq = ++loadSeq
   pending.value = true
+  error.value = ''
   try {
     const res = await $fetch<ProjectionResponse>(`/api/projection?platform=${settings.platform}`)
+    if (seq !== loadSeq) return
     entries.value = res.entries
+  } catch {
+    if (seq !== loadSeq) return
+    entries.value = []
+    error.value = `Could not project ${settings.platform}.`
   } finally {
-    pending.value = false
+    if (seq === loadSeq) pending.value = false
   }
 }
 
 watch(() => settings.platform, load, { immediate: true })
 
-const tree = computed<TreeNode[]>(() => buildTree(teamEntries.value))
+const tree = computed<TreeNodeData[]>(() =>
+  buildTree(teamEntries.value, { keepInput: inClosure })
+)
 
-function buildTree(list: ProjectionEntry[]): TreeNode[] {
-  const root: TreeNode = { name: '', path: '', sourcePath: null, isDir: true, children: [] }
-  for (const e of list) {
-    const parts = e.projectedPath.split('/')
-    let cur = root
-    for (let i = 0; i < parts.length; i++) {
-      const name = parts[i]
-      const isLeaf = i === parts.length - 1
-      cur.children = cur.children || []
-      let next = cur.children.find((c) => c.name === name)
-      if (!next) {
-        next = {
-          name,
-          path: parts.slice(0, i + 1).join('/'),
-          sourcePath: isLeaf ? e.sourcePath : null,
-          synthesized: isLeaf ? e.synthesized : undefined,
-          note: isLeaf ? e.note : undefined,
-          isDir: !isLeaf,
-          children: isLeaf ? undefined : []
-        }
-        cur.children.push(next)
-      }
-      cur = next
-    }
+function onSelect(node: TreeNodeData) {
+  if (node.kind === 'dir' || node.kind === 'bundle-input-group') return
+  if (node.kind === 'bundle-input') {
+    // An input is a library file, not a projected one.
+    emit('select', { projectedPath: node.path, sourcePath: node.sourcePath, isInput: true })
+    return
   }
-  sortTree(root)
-  return root.children || []
-}
-
-// Category folders sort by intent (skills → agents → knowledge), not
-// alphabetically; everything else falls back to alphabetical after them.
-const CATEGORY_RANK: Record<string, number> = {
-  skills: 0, agents: 1, knowledge: 2, references: 2
-}
-function categoryRank(name: string): number {
-  return CATEGORY_RANK[name.toLowerCase()] ?? 99
-}
-
-function sortTree(node: TreeNode) {
-  if (!node.children) return
-  node.children.sort((a, b) => {
-    if (a.isDir !== b.isDir) return a.isDir ? -1 : 1
-    const ra = categoryRank(a.name)
-    const rb = categoryRank(b.name)
-    if (ra !== rb) return ra - rb
-    return a.name.localeCompare(b.name)
-  })
-  for (const c of node.children) sortTree(c)
-}
-
-function onSelect(node: TreeNode) {
-  if (node.isDir) return
   emit('select', {
     projectedPath: node.path,
     sourcePath: node.sourcePath,
@@ -217,6 +188,7 @@ function onSelect(node: TreeNode) {
 }
 .root { list-style: none; padding: 0; margin: 0; }
 .hint { color: var(--r-muted); font-size: 12px; padding: 4px 0; }
+.hint.err { color: var(--r-pine); }
 .search {
   position: relative;
   margin-bottom: var(--r-3);

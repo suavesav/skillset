@@ -2,7 +2,7 @@ import { readFile, readdir, lstat, stat, realpath } from 'node:fs/promises'
 import { join, basename, sep } from 'node:path'
 
 export interface LocalSkillFile {
-  /** Relative to claudeHome, e.g. "skills/le-analyst/SKILL.md" */
+  /** Relative to claudeHome, e.g. "skills/encounter-tuner/SKILL.md" */
   relPath: string
   absPath: string
   isSymlink: boolean

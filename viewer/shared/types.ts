@@ -11,7 +11,7 @@ export interface LibraryLink {
 export interface LibraryFile {
   name: string
   kind: FileKind
-  /** Path relative to the repo root, e.g. "SKILLS/le-analyst.md" */
+  /** Path relative to the repo root, e.g. "SKILLS/encounter-tuner.md" */
   path: string
   description?: string
   /** Team bundles this file ships in (from the `teams:` frontmatter). Only meaningful for SKILLs; empty for AGENT/KNOWLEDGE. */
@@ -34,6 +34,11 @@ export interface ProjectionEntry {
   synthesized?: boolean
   /** Optional human-readable note shown in the UI. */
   note?: string
+  /**
+   * Sources concatenated into a synthesized file, in build order. Empty for 1:1
+   * copies, where `sourcePath` already says it. See platforms/PROJECTION.md.
+   */
+  inputs?: string[]
 }
 
 export interface FilesResponse {
@@ -44,6 +49,15 @@ export interface FilesResponse {
 export interface ProjectionResponse {
   platform: Platform
   entries: ProjectionEntry[]
+}
+
+export interface ProjectedFileResponse {
+  platform: Platform
+  /** The projected path that was compiled. */
+  path: string
+  /** Byte-identical to what a real build writes. */
+  content: string
+  bytes: number
 }
 
 export interface FileResponse {
@@ -75,7 +89,7 @@ export type DriftStatus =
   | 'conflict'      // multiple local copies disagree
 
 export interface LocalLocation {
-  /** Path relative to claudeHome, e.g. "skills/le-analyst/SKILL.md" */
+  /** Path relative to claudeHome, e.g. "skills/encounter-tuner/SKILL.md" */
   localPath: string
   /** Which skill bundles this file (for skill-bundled agents). null for top-level. */
   owningSkill: string | null
@@ -86,7 +100,7 @@ export interface LocalLocation {
 export interface DriftItem {
   name: string
   kind: DriftKind
-  /** Path in the repo, e.g. "SKILLS/le-analyst.md". null for local-only. */
+  /** Path in the repo, e.g. "SKILLS/encounter-tuner.md". null for local-only. */
   libraryPath: string | null
   /** Aggregate status (worst-case across locations). */
   status: DriftStatus
