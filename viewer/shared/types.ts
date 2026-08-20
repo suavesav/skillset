@@ -115,61 +115,6 @@ export interface DriftResponse {
 
 export type DiffViewMode = 'normalized' | 'raw' | 'frontmatter'
 
-/** Frontmatter the contributor can set when submitting a NEW skill. */
-export interface FrontmatterOverrides {
-  teams?: string[]
-  description?: string
-  triggers?: string[]
-}
-
-export interface ContributeRequest {
-  name: string
-  kind: DriftKind
-  /**
-   * Relative path to the local file, e.g. "skills/my-skill/SKILL.md". Its base
-   * depends on the mode: without `localContent` the server resolves it against
-   * claudeHome; with `localContent` it is relative to the folder the user picked
-   * in the browser (often ~/.claude/skills) and is used only as a label.
-   */
-  localPath: string
-  /**
-   * Local file content read by the browser. When present, the server uses it
-   * directly instead of reading claudeHome (required in the hosted app).
-   */
-  localContent?: string
-  /** Contributor-set frontmatter for new skills (teams, description, triggers). */
-  overrides?: FrontmatterOverrides
-  /**
-   * Optional self-reported GitHub handle of the submitter. PRs are authored by
-   * the neutral `skillset[bot]` identity, so this is the only attribution the
-   * reviewer gets; it is untrusted and rendered as plain text in the PR body.
-   */
-  submitter?: string
-}
-
-export interface ContributePreviewResponse {
-  name: string
-  kind: DriftKind
-  isNew: boolean
-  /** Where the file will land in the repo, e.g. "SKILLS/my-skill.md" */
-  targetPath: string
-  /** Full converted library-format file content. */
-  converted: string
-  /** Current library version of the file, null for new skills. */
-  libraryContent: string | null
-  /** Derived one-line description (seeds the editor for new skills). */
-  description: string
-  /** Validation errors from scripts/validate.py (empty = clean). */
-  validationErrors: string[]
-}
-
-export interface ContributeSubmitResponse {
-  prUrl: string
-  branch: string
-  /** True when an open PR for this item already existed (no new PR opened). */
-  existing?: boolean
-}
-
 export interface DriftPairResponse {
   name: string
   kind: DriftKind

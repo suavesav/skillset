@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0 — 2026-08-20
+
+- Viewer is read-only. Removed the contribution path entirely: the submit-for-review modal, the preview/submit API routes, the GitHub App and token plumbing, the same-origin/rate-limit submit guards, and the PR badges. The Diff page still compares a local install against the library; it just has nowhere to write.
+
 ## 0.2.0 — 2026-08-19
 
 - Projection contract (`platforms/PROJECTION.md`): every platform script now supports `--list` (with an inputs column), `--emit <path>`, `--emit-all`, and `--describe`, with path-traversal guards; the build and the projection share one set of emitter functions so they cannot drift

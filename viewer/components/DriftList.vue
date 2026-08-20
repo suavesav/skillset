@@ -56,15 +56,6 @@
             >🔗</span>
             <span class="loc" v-if="entry.location?.owningSkill">in {{ entry.location.owningSkill }}</span>
             <span class="loc" v-else-if="entry.location && entry.item.kind === 'AGENT'">top-level</span>
-            <a
-              v-if="submitted.has(entry.key)"
-              class="pr-badge"
-              :href="submitted.get(entry.key)"
-              target="_blank"
-              rel="noopener"
-              title="Open pull request"
-              @click.stop
-            >PR ↗</a>
           </li>
         </ul>
       </div>
@@ -78,7 +69,6 @@ import type { DriftItem, DriftResponse, DriftStatus, LocalLocation } from '../sh
 import { useLocalFolder } from '../composables/useLocalFolder'
 import { useTeamFilter } from '../composables/useTeamFilter'
 import { useViewerSettings } from '../composables/useViewerSettings'
-import { useContribute } from '../composables/useContribute'
 
 // Local install source for the diff (browser-read; server never touches disk).
 // Phase 1: pick + enumerate. Phase 2 feeds these contents into the drift APIs.
@@ -106,7 +96,6 @@ const pending = ref(false)
 const filter = ref('')
 const settings = useViewerSettings() // persisted "show synced/unchanged"
 const { inTeam } = useTeamFilter() // global team filter (dropdown lives in the topbar)
-const { submitted } = useContribute() // items with an open PR (persisted)
 
 const DEFAULT_COLLAPSED: DriftStatus[] = ['local-only', 'library-only']
 const collapsed = ref<Set<DriftStatus>>(new Set(DEFAULT_COLLAPSED))
@@ -330,17 +319,4 @@ ul { list-style: none; padding: 0; margin: 0; }
 .name { color: var(--r-ink); font-size: 12px; }
 .link-hint { font-size: 10px; flex-shrink: 0; line-height: 1; opacity: 0.75; cursor: help; }
 .loc { color: var(--r-muted); font-size: 11px; margin-left: auto; }
-.pr-badge {
-  margin-left: auto;
-  flex-shrink: 0;
-  font-size: 10px;
-  font-family: var(--r-mono);
-  color: var(--r-add);
-  border: 1px solid var(--r-add);
-  border-radius: var(--r-radius-pill);
-  padding: 0 6px;
-  text-decoration: none;
-}
-.pr-badge:hover { background: var(--r-add); color: #fff; }
-.item.active .pr-badge { color: var(--r-violet-soft); border-color: var(--r-violet-soft); }
 </style>

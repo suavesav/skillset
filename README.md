@@ -108,7 +108,7 @@ Each skill declares a `teams:` list in its frontmatter (`engineering`, `liveops`
 
 ## The Viewer
 
-A local web app for browsing the library the way it's meant to be read — as a linked graph, not a folder of files.
+A local web app for browsing the library the way it's meant to be read — as a linked graph, not a folder of files. It is read-only: it renders the repository and never writes to it.
 
 ```bash
 cd viewer && npm install && npm run dev
@@ -116,8 +116,7 @@ cd viewer && npm install && npm run dev
 
 - **Files** — browse SKILLS/AGENTS/KNOWLEDGE with rendered markdown, resolved `[[links]]`, and per-file dependency panels; filter by team bundle. A platform selector re-renders the tree as any projector's output — what lands where, which files are synthesized from which inputs, and the exact compiled bytes of each artifact
 - **Graph** — the whole library as an interactive dependency graph (skills → agents → knowledge)
-- **Diff** — compares your `~/.claude` install against the library: drift in edited skills, local-only skills you've built
-- **Submit** — converts a local skill to library format (frontmatter, `[[links]]`) and opens a PR, no YAML knowledge required
+- **Diff** — compares a local install against the library side by side: drift in edited skills, local-only skills, library-only skills. Comparison only; nothing is written back
 
 ## Local Overrides
 
@@ -127,9 +126,7 @@ Customize a skill without touching library files: put your version in `local/SKI
 
 1. Create or edit files in `SKILLS/`, `AGENTS/`, or `KNOWLEDGE/` per the format in `CLAUDE.md`
 2. Run `scripts/validate.sh` — it checks frontmatter, `[[link]]` resolution, and platform-agnostic rules (no hardcoded paths, no platform API syntax)
-3. Bump `VERSION`, note the change in `CHANGELOG.md`, open a PR
-
-Or use the viewer's Diff page: select your local skill, click Submit for review, and it handles conversion, preview, and the PR.
+3. Bump `VERSION` and note the change in `CHANGELOG.md`
 
 ## Structure
 
@@ -145,7 +142,7 @@ skillset/
 │   ├── claude-desktop/  ← single bundled context file
 │   ├── codex/           ← AGENTS.md + .skillset/ projection
 │   └── generic/         ← preamble for any file-reading AI tool
-├── viewer/          ← local web app: browse, graph, diff, submit
+├── viewer/          ← local web app (read-only): browse, graph, diff
 ├── scripts/         ← validate.sh / validate.py
 ├── local/           ← gitignored personal overrides
 ├── VERSION

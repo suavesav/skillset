@@ -10,17 +10,6 @@
           <span v-if="selection.item.libraryPath" class="path">↔ {{ selection.item.libraryPath }}</span>
         </div>
         <div class="controls">
-          <a v-if="submittedUrl" class="ctrl submitted" :href="submittedUrl" target="_blank" rel="noopener">
-            view PR ↗
-          </a>
-          <button
-            v-else-if="canContribute"
-            class="ctrl contribute"
-            title="Convert this local version to library format and open a PR for review"
-            @click="showContribute = true"
-          >
-            Submit for review
-          </button>
           <template v-if="!singleFile">
             <select v-model="mode" class="ctrl">
               <option value="normalized">normalized</option>
@@ -41,10 +30,10 @@
       <div v-else-if="error" class="status err">{{ error }}</div>
       <div v-else-if="symlink" class="status info symlink-note">
         <p v-if="symlink.syncedToLibrary">
-          🔗 <strong>Linked to the library.</strong> This {{ kindWord }} is a shortcut pointing straight at the shared library copy<template v-if="symlink.target"> (<code>{{ symlink.target }}</code>)</template>, so it always stays in sync. There's nothing to review or submit.
+          🔗 <strong>Linked to the library.</strong> This {{ kindWord }} is a shortcut pointing straight at the shared library copy<template v-if="symlink.target"> (<code>{{ symlink.target }}</code>)</template>, so it always stays in sync — there is nothing to compare.
         </p>
         <p v-else>
-          🔗 <strong>This is a shortcut.</strong> The “{{ selection.item.name }}” {{ kindWord }} isn't kept in your skills folder — it links to another folder on your computer<template v-if="symlink.target"> (<code>{{ symlink.target }}</code>)</template>. You're seeing a reference to it, not your own copy, so it can't be submitted to the library from here.
+          🔗 <strong>This is a shortcut.</strong> The “{{ selection.item.name }}” {{ kindWord }} isn't kept in your skills folder — it links to another folder on your computer<template v-if="symlink.target"> (<code>{{ symlink.target }}</code>)</template>. You're seeing a reference to it, not your own copy.
         </p>
       </div>
       <div v-else-if="!pair" class="status">No comparison available.</div>
@@ -106,12 +95,6 @@
           </div>
         </template>
       </div>
-
-      <ContributeModal
-        v-if="showContribute && selection"
-        :selection="selection"
-        @close="showContribute = false"
-      />
     </template>
   </section>
 </template>
@@ -121,25 +104,12 @@ import { ref, computed, watch, toRefs } from 'vue'
 import { diffLines, type Change } from 'diff'
 import type { DriftPairResponse } from '../shared/types'
 import type { DriftSelection } from './DriftList.vue'
-import ContributeModal from './ContributeModal.vue'
-import { useContribute } from '../composables/useContribute'
 import { useLocalFolder } from '../composables/useLocalFolder'
 import { useViewerSettings } from '../composables/useViewerSettings'
 
 const props = defineProps<{ selection: DriftSelection | null }>()
 
-const showContribute = ref(false)
-const { submitted } = useContribute()
 const { files: localFiles } = useLocalFolder()
-
-const CONTRIBUTABLE = new Set(['local-only', 'drift', 'conflict'])
-const canContribute = computed(() => {
-  const loc = props.selection?.location
-  return !!loc && !loc.isSymlink && CONTRIBUTABLE.has(loc.status)
-})
-const submittedUrl = computed(() =>
-  props.selection ? submitted.get(props.selection.key) ?? null : null
-)
 
 // Persisted diff prefs, exposed as refs so the rest of the component is unchanged.
 const settings = useViewerSettings()
@@ -169,7 +139,6 @@ async function loadPair() {
   const sel = props.selection
   pair.value = null
   error.value = null
-  showContribute.value = false
   if (!sel) return
   pending.value = true
   try {
@@ -373,8 +342,6 @@ function extractFrontmatter(text: string): string {
 .ctrl:hover { border-color: var(--r-pine); }
 .ctrl.on { background: var(--r-pine); color: #fff; border-color: var(--r-pine); }
 .ctrl .box { font-family: var(--r-font); margin-right: 1px; }
-.ctrl.contribute { background: var(--r-pine); color: #fff; border-color: var(--r-pine); font-weight: 600; }
-.ctrl.submitted { background: transparent; color: var(--r-add); border-color: var(--r-add); text-decoration: none; display: inline-flex; align-items: center; }
 .status { padding: var(--r-6); color: var(--r-ink-2); font-size: 13px; }
 .status.err { color: var(--r-del); }
 .status.info { color: var(--r-ink-2); }
