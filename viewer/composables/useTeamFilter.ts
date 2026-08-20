@@ -3,7 +3,7 @@ import type { FilesResponse, LibraryFile } from '../shared/types'
 
 /**
  * App-global "filter by team bundle". Singleton so the topbar dropdown and every
- * view (graph, files, diff) share one selection. A team selects its skills (by
+ * view (files, graph) share one selection. A team selects its skills (by
  * `teams:` frontmatter, incl. `all`) plus everything they transitively reference
  * — the same closure a team plugin ships — so agents/knowledge come along.
  */

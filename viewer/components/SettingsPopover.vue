@@ -13,10 +13,6 @@
         <input type="checkbox" v-model="settings.showGraph" />
         <span>Graph view</span>
       </label>
-      <label class="row">
-        <input type="checkbox" v-model="settings.showDiff" />
-        <span>Diff view</span>
-      </label>
       <div class="hint">Files view is always on.</div>
     </div>
   </div>

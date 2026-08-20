@@ -9,8 +9,7 @@ export default defineNuxtConfig({
   ssr: false,
   css: ['~/assets/tokens.css'],
   runtimeConfig: {
-    repoRoot: process.env.SKILLSET_REPO_ROOT || resolve(here, '..'),
-    claudeHome: process.env.SKILLSET_CLAUDE_HOME || resolve(process.env.HOME || '~', '.claude')
+    repoRoot: process.env.SKILLSET_REPO_ROOT || resolve(here, '..')
   },
   app: {
     head: {

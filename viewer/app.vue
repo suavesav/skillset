@@ -5,7 +5,6 @@
       <nav>
         <NuxtLink to="/files">Files</NuxtLink>
         <NuxtLink v-if="settings.showGraph" to="/graph">Graph</NuxtLink>
-        <NuxtLink v-if="settings.showDiff" to="/diff">Diff</NuxtLink>
       </nav>
       <div class="topbar-spacer" />
       <select v-if="teams.length" v-model="selectedTeam" class="team-select" title="Filter by team bundle" aria-label="Filter by team bundle">

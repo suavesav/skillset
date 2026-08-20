@@ -2,7 +2,7 @@
 
 ## 0.3.0 — 2026-08-20
 
-- Viewer is read-only. Removed the contribution path entirely: the submit-for-review modal, the preview/submit API routes, the GitHub App and token plumbing, the same-origin/rate-limit submit guards, and the PR badges. The Diff page still compares a local install against the library; it just has nowhere to write.
+- Viewer is read-only and repository-only. Removed the contribution path (submit-for-review modal, preview/submit API routes, GitHub App and token plumbing, submit guards, PR badges) and then the Diff module itself (drift APIs, local-folder picker, `~/.claude` inventory reader, diff renderer, and the `claudeHome` runtime config). The viewer now reads nothing outside this repository: Files and Graph only.
 
 ## 0.2.0 — 2026-08-19
 
@@ -17,5 +17,5 @@ Initial release.
 
 - 15 skills + meta, 5 agents, 18 knowledge files, and the simbench harness asset for the Gladewick Games demo library
 - Platform projectors: claude-code, claude-plugin (per-team marketplace build), claude-desktop, codex, generic
-- Viewer app: files, graph, diff, and submit pages
+- Viewer app: files and graph pages
 - Validator: frontmatter, [[link]] resolution, platform-agnostic rules

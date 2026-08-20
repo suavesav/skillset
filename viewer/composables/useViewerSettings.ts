@@ -1,30 +1,16 @@
 import { reactive, watch } from 'vue'
-import type { Platform, DiffViewMode } from '../shared/types'
+import type { Platform } from '../shared/types'
 
 export interface ViewerSettings {
-  showDiff: boolean
   showGraph: boolean
   /** Files view: selected platform projection. */
   platform: Platform
-  /** Diff view: drift-list "show synced/unchanged" toggle. */
-  driftShowAll: boolean
-  /** Diff view: normalized / raw / frontmatter. */
-  diffMode: DiffViewMode
-  /** Diff view: collapse unchanged runs. */
-  diffChangesOnly: boolean
-  /** Diff view: side-by-side vs unified. */
-  diffSideBySide: boolean
 }
 
 const STORAGE_KEY = 'skillset:viewer-settings'
 const DEFAULTS: ViewerSettings = {
-  showDiff: false,
   showGraph: false,
-  platform: 'raw',
-  driftShowAll: false,
-  diffMode: 'normalized',
-  diffChangesOnly: true,
-  diffSideBySide: false
+  platform: 'raw'
 }
 
 let state: ViewerSettings | null = null

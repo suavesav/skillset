@@ -108,7 +108,7 @@ Each skill declares a `teams:` list in its frontmatter (`engineering`, `liveops`
 
 ## The Viewer
 
-A local web app for browsing the library the way it's meant to be read — as a linked graph, not a folder of files. It is read-only: it renders the repository and never writes to it.
+A local web app for browsing the library the way it's meant to be read — as a linked graph, not a folder of files. It is read-only: it renders the repository and never writes to it or to anything on your machine.
 
 ```bash
 cd viewer && npm install && npm run dev
@@ -116,7 +116,6 @@ cd viewer && npm install && npm run dev
 
 - **Files** — browse SKILLS/AGENTS/KNOWLEDGE with rendered markdown, resolved `[[links]]`, and per-file dependency panels; filter by team bundle. A platform selector re-renders the tree as any projector's output — what lands where, which files are synthesized from which inputs, and the exact compiled bytes of each artifact
 - **Graph** — the whole library as an interactive dependency graph (skills → agents → knowledge)
-- **Diff** — compares a local install against the library side by side: drift in edited skills, local-only skills, library-only skills. Comparison only; nothing is written back
 
 ## Local Overrides
 
@@ -142,7 +141,7 @@ skillset/
 │   ├── claude-desktop/  ← single bundled context file
 │   ├── codex/           ← AGENTS.md + .skillset/ projection
 │   └── generic/         ← preamble for any file-reading AI tool
-├── viewer/          ← local web app (read-only): browse, graph, diff
+├── viewer/          ← local web app (read-only): browse, graph
 ├── scripts/         ← validate.sh / validate.py
 ├── local/           ← gitignored personal overrides
 ├── VERSION
