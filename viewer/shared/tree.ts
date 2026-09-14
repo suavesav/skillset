@@ -23,8 +23,6 @@ export interface TreeNodeData {
   note?: string
   /** Library files compiled into this file (synthesized bundles only). */
   inputCount?: number
-  /** Child count, shown on directories and input groups. */
-  count?: number
   children?: TreeNodeData[]
 }
 
@@ -79,7 +77,6 @@ function buildInputGroups(
       sourcePath: input
     })
   }
-  for (const g of groups) g.count = g.children!.length
   return groups
 }
 
@@ -130,7 +127,7 @@ export function buildTree(
       }
       if (isLeaf && e.inputs?.length) {
         const groups = buildInputGroups(e.inputs, keepInput)
-        const shown = groups.reduce((n, g) => n + (g.count ?? 0), 0)
+        const shown = groups.reduce((n, g) => n + (g.children?.length ?? 0), 0)
         if (shown) {
           next.children = groups
           next.inputCount = shown
@@ -140,11 +137,11 @@ export function buildTree(
     }
   }
 
-  countAndSort(root)
+  sortTree(root)
   return root.children || []
 }
 
-function countAndSort(node: TreeNodeData) {
+function sortTree(node: TreeNodeData) {
   if (!node.children) return
   if (node.kind === 'dir') {
     node.children.sort((a, b) => {
@@ -160,16 +157,8 @@ function countAndSort(node: TreeNodeData) {
       if (ra !== rb) return ra - rb
       return a.name.localeCompare(b.name)
     })
-    if (node.path) node.count = countFiles(node)
   }
-  for (const c of node.children) countAndSort(c)
-}
-
-/** Projected files at or below this node. Bundle inputs are not files. */
-function countFiles(node: TreeNodeData): number {
-  if (node.kind === 'file') return 1
-  if (node.kind !== 'dir') return 0
-  return (node.children || []).reduce((n, c) => n + countFiles(c), 0)
+  for (const c of node.children) sortTree(c)
 }
 
 export function formatBytes(n: number | null | undefined): string {
