@@ -58,7 +58,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import MarkdownIt from 'markdown-it'
-import type { ProjectedFileResponse, Platform } from '../shared/types'
+import type { CompiledPlatform, FileResponse, ProjectedFileResponse, Platform } from '../shared/types'
+import { apiFile, apiProjectedFile } from '../shared/api'
 import { formatBytes } from '../shared/tree'
 
 const props = defineProps<{
@@ -106,10 +107,7 @@ async function loadSource(p: string) {
   const seq = ++sourceSeq
   pending.value = true
   try {
-    // Non-library sources are readable only via a projection that names them.
-    const res = await $fetch<{ content: string }>('/api/file', {
-      query: { path: p, ...(props.platform && props.platform !== 'raw' ? { platform: props.platform } : {}) }
-    })
+    const res = await $fetch<FileResponse>(apiFile(p))
     if (seq !== sourceSeq) return
     rendered.value = renderMd(res.content)
   } catch {
@@ -130,9 +128,9 @@ async function loadCompiled() {
   compiledPending.value = true
   compiledError.value = ''
   try {
-    const res = await $fetch<ProjectedFileResponse>('/api/projected-file', {
-      query: { platform: props.platform, path: props.projectedPath }
-    })
+    const res = await $fetch<ProjectedFileResponse>(
+      apiProjectedFile(props.platform as CompiledPlatform, props.projectedPath!)
+    )
     if (seq !== compileSeq) return
     compiled.value = res.content
     compiledBytes.value = res.bytes

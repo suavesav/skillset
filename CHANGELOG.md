@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0 — 2026-09-14
+
+- Public release under the MIT license. Added `LICENSE`, `CONTRIBUTING.md` (issues and Discussions open, pull requests not accepted), `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue forms, a PR template, Dependabot config, and a workflow that closes pull requests from other accounts.
+- Viewer builds as a static site. The five query-string API routes became path-param `.json` routes (`/api/files.json`, `/api/projection/<platform>.json`, `/api/file/<path>.json`, `/api/projected-file/<platform>/<path>.json`, `/api/search-index.json`) so `nuxi generate` prerenders every response; search now runs in the browser over the prerendered index; projected files are prerendered from one `--emit-all` run per platform. `npm run dev` still serves live data. Deployed to GitHub Pages at https://suavesav.github.io/skillset/ by `.github/workflows/pages.yml` on pushes to `main`.
+- Marketplace `owner.name` is `suavesav`; the Gladewick Games fiction stays in plugin descriptions and is labelled as demo content in `CLAUDE.md`. README clone URL is HTTPS. Rebuilt `dist/` and the root `marketplace.json`, which had been left at 0.3.0.
+
 ## 0.4.0 — 2026-08-27
 
 - Removed the `claude-code` and `claude-desktop` platform projectors. Claude skills are distributed via the plugin marketplace (`claude-plugin`); remaining platform projectors are `claude-plugin`, `codex`, and `generic`. The viewer's platform selector (`raw`, `claude-plugin`, `codex`) and its tests now cover only the scripted ones.

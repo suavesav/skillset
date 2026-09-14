@@ -1,45 +1,42 @@
 import { readFile, realpath, stat } from 'node:fs/promises'
 import { join, normalize, resolve, sep } from 'node:path'
-import { loadLibrary } from '../utils/library'
-import { projectionOf } from '../utils/projectionCache'
-import { PLATFORMS, type Platform } from '../../shared/types'
+import { loadLibrary } from '../../utils/library'
+import { projectionOf } from '../../utils/projectionCache'
+import { COMPILED_PLATFORMS, isLibraryMarkdown, stripJsonSuffix } from '../../../shared/api'
+import type { FileResponse } from '../../../shared/types'
 
 /**
- * Sources a platform's projection actually names — every `sourcePath` plus every
- * entry in an `inputs` list. Authorizing against this rather than a `platforms/`
- * prefix keeps unrelated platform scripts and configuration unreadable, and it
- * admits build inputs like VERSION that are not library files.
+ * Sources the projections actually name — every `sourcePath` plus every entry in
+ * an `inputs` list. Authorizing against this rather than a `platforms/` prefix
+ * keeps unrelated platform scripts and configuration unreadable, and it admits
+ * build inputs like VERSION that are not library files.
  */
-async function projectionSources(repoRoot: string, platform: Platform): Promise<Set<string>> {
+async function projectionSources(repoRoot: string): Promise<Set<string>> {
   const files = await loadLibrary(repoRoot)
-  const { entries } = await projectionOf(platform, repoRoot, files)
   const out = new Set<string>()
-  for (const e of entries) {
-    if (e.sourcePath) out.add(e.sourcePath)
-    for (const i of e.inputs ?? []) out.add(i)
+  for (const platform of COMPILED_PLATFORMS) {
+    const { entries } = await projectionOf(platform, repoRoot, files)
+    for (const e of entries) {
+      if (e.sourcePath) out.add(e.sourcePath)
+      for (const i of e.inputs ?? []) out.add(i)
+    }
   }
   return out
 }
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<FileResponse> => {
   const { repoRoot } = useRuntimeConfig(event)
-  const query = getQuery(event)
-  const rel = typeof query.path === 'string' ? query.path : ''
-  const platform = typeof query.platform === 'string' ? (query.platform as Platform) : null
+  const rel = stripJsonSuffix(getRouterParam(event, 'path') || '')
   if (!rel || rel === '.' || rel === './') {
-    throw createError({ statusCode: 400, statusMessage: 'path query param required' })
+    throw createError({ statusCode: 400, statusMessage: 'path is required' })
   }
 
   // Allowlist. Library markdown is always readable. Anything else must be named
-  // as a source by the projection the caller is looking at — .git/config, .env,
-  // local/ overrides and unrelated platform files stay unreachable.
+  // as a source by one of the projections — .git/config, .env, local/ overrides
+  // and unrelated platform files stay unreachable.
   const norm = normalize(rel)
-  const isLibrary = /^(SKILLS|AGENTS|KNOWLEDGE)\//.test(norm) && norm.endsWith('.md')
-  if (!isLibrary) {
-    if (!platform || !PLATFORMS.includes(platform) || platform === 'raw') {
-      throw createError({ statusCode: 400, statusMessage: 'invalid path' })
-    }
-    const sources = await projectionSources(repoRoot as string, platform)
+  if (!isLibraryMarkdown(norm)) {
+    const sources = await projectionSources(repoRoot as string)
     if (!sources.has(norm)) {
       throw createError({ statusCode: 400, statusMessage: 'invalid path' })
     }

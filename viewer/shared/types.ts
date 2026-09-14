@@ -23,6 +23,9 @@ export interface LibraryFile {
 
 export type Platform = 'raw' | 'claude-plugin' | 'codex'
 
+/** A platform with a compiled form. `raw` is the repo layout itself. */
+export type CompiledPlatform = Exclude<Platform, 'raw'>
+
 export const PLATFORMS: Platform[] = ['raw', 'claude-plugin', 'codex']
 
 export interface ProjectionEntry {
@@ -42,7 +45,6 @@ export interface ProjectionEntry {
 }
 
 export interface FilesResponse {
-  repoRoot: string
   files: LibraryFile[]
 }
 
@@ -73,7 +75,14 @@ export interface SearchMatch {
   excerpt?: string
 }
 
-export interface SearchResponse {
-  query: string
-  matches: SearchMatch[]
+/** One searchable file: metadata plus its raw bytes, frontmatter included. */
+export interface SearchIndexEntry {
+  name: string
+  path: string
+  kind: FileKind
+  content: string
+}
+
+export interface SearchIndexResponse {
+  entries: SearchIndexEntry[]
 }

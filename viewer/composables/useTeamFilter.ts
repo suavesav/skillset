@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import type { FilesResponse, LibraryFile } from '../shared/types'
+import { apiFiles } from '../shared/api'
 
 /**
  * App-global "filter by team bundle". Singleton so the topbar dropdown and every
@@ -16,7 +17,7 @@ async function ensureLoaded() {
   if (loaded) return
   loaded = true
   try {
-    const res = await $fetch<FilesResponse>('/api/files')
+    const res = await $fetch<FilesResponse>(apiFiles())
     files.value = res.files
   } catch {
     loaded = false // allow a retry on next mount

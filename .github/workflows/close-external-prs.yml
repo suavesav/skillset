@@ -1,0 +1,29 @@
+name: Close external pull requests
+
+# pull_request_target runs in the context of main with a write-scoped token,
+# so this job must never check out or execute anything from the PR.
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  close:
+    if: >-
+      github.event.pull_request.user.login != github.repository_owner &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          gh pr comment "$PR_NUMBER" --repo "$REPO" --body-file - <<'MSG'
+          Thanks for the interest. This repository does not accept pull requests at the moment: `main` publishes the plugin marketplace and the hosted viewer directly, and the maintainer is the only committer. See CONTRIBUTING.md.
+
+          If this fixes a bug or proposes a change, please open an issue or a Discussion and link this PR. It stays visible after closing.
+          MSG
+          gh pr close "$PR_NUMBER" --repo "$REPO"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}

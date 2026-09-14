@@ -1,6 +1,6 @@
 # skillset — Agent Instructions
 
-This is a shareable, version-controlled library of AI skills, agents, and knowledge for Gladewick Games, a game development studio. It is platform-agnostic — the same files work across Claude Code (via plugin), OpenAI Codex, and any AI tool that reads markdown.
+This is a shareable, version-controlled library of AI skills, agents, and knowledge for Gladewick Games, a fictional game studio used as demo content. It is platform-agnostic — the same files work across Claude Code (via plugin), OpenAI Codex, and any AI tool that reads markdown.
 
 ## Architecture
 

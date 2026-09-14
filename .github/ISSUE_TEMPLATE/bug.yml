@@ -1,0 +1,41 @@
+name: Bug
+description: Report a bug in skillset.
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: what-expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - Claude Code plugin
+        - Codex projection
+        - build.sh / setup.sh
+        - validate.py
+        - viewer (local)
+        - viewer (hosted)
+        - other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Contents of VERSION or the plugin version.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce

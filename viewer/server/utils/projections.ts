@@ -2,12 +2,12 @@ import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { stat } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { LibraryFile, Platform, ProjectionEntry } from '../../shared/types'
+import type { CompiledPlatform, LibraryFile, Platform, ProjectionEntry } from '../../shared/types'
 
 const execFileP = promisify(execFile)
 
 /** The script implementing each platform's projection, relative to repo root. */
-const SCRIPTS: Record<Exclude<Platform, 'raw'>, string> = {
+const SCRIPTS: Record<CompiledPlatform, string> = {
   'claude-plugin': 'platforms/claude-plugin/build.sh',
   'codex': 'platforms/codex/setup.sh'
 }
@@ -94,6 +94,58 @@ export async function emit(
 }
 
 /**
+ * Walk `--emit-all` output, one call per record. By declared length, not by
+ * splitting on the separator: a 0x1e in content is legal.
+ */
+function forEachEmitted(
+  out: Buffer,
+  onRecord: (path: string, bytes: number, start: number) => void
+): void {
+  let off = 0
+  while (off < out.length) {
+    if (out[off] !== RS) {
+      throw new Error(`--emit-all: expected a record separator at byte ${off}`)
+    }
+    const nl = out.indexOf(LF, off)
+    if (nl === -1) break
+    const [path, bytes] = out.toString('utf-8', off + 1, nl).split('\t')
+    const n = Number(bytes)
+    if (!path || !Number.isInteger(n) || n < 0) {
+      throw new Error(`--emit-all: malformed record header at byte ${off}`)
+    }
+    onRecord(path, n, nl + 1)
+    off = nl + 1 + n
+  }
+}
+
+async function runEmitAll(platform: CompiledPlatform, repoRoot: string): Promise<Buffer> {
+  return runScriptRaw(repoRoot, SCRIPTS[platform], ['--emit-all'], 120_000)
+}
+
+export interface EmittedFile {
+  content: string
+  bytes: number
+}
+
+/**
+ * Every projected file compiled in one `--emit-all` pass. Per-file `--emit` is
+ * ~2.7 s, so prerendering the whole projection one route at a time would take
+ * minutes; this is the same work in one script run. Callers must cache it.
+ */
+export async function emitAll(
+  platform: Platform,
+  repoRoot: string
+): Promise<Map<string, EmittedFile>> {
+  if (platform === 'raw') throw new Error('raw has no compiled form')
+  const out = await runEmitAll(platform, repoRoot)
+  const files = new Map<string, EmittedFile>()
+  forEachEmitted(out, (path, bytes, start) => {
+    files.set(path, { content: out.toString('utf-8', start, start + bytes), bytes })
+  })
+  return files
+}
+
+/**
  * Byte size of every projected file, from one `--emit-all` pass. Compiles the
  * whole output, so a caller must cache it. Nothing renders sizes — this is the
  * reference reader for the framing, exercised by the contract tests.
@@ -115,22 +167,9 @@ export async function emitAllSizes(
     }
     return sizes
   }
-  // By declared length, not by splitting: a 0x1e in content is legal.
-  const out = await runScriptRaw(repoRoot, SCRIPTS[platform], ['--emit-all'], 120_000)
-  let off = 0
-  while (off < out.length) {
-    if (out[off] !== RS) {
-      throw new Error(`--emit-all: expected a record separator at byte ${off}`)
-    }
-    const nl = out.indexOf(LF, off)
-    if (nl === -1) break
-    const [path, bytes] = out.toString('utf-8', off + 1, nl).split('\t')
-    const n = Number(bytes)
-    if (!path || !Number.isInteger(n) || n < 0) {
-      throw new Error(`--emit-all: malformed record header at byte ${off}`)
-    }
-    sizes[path] = n
-    off = nl + 1 + n
-  }
+  const out = await runEmitAll(platform, repoRoot)
+  forEachEmitted(out, (path, bytes) => {
+    sizes[path] = bytes
+  })
   return sizes
 }

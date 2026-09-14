@@ -1,0 +1,47 @@
+name: Idea
+title: "[idea] "
+labels:
+  - idea
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - new skill
+        - new agent
+        - new knowledge file
+        - change to an existing file
+        - change to the library format or projectors
+        - viewer
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: kebab-case
+  - type: checkboxes
+    id: teams
+    attributes:
+      label: Team bundles
+      options:
+        - label: engineering
+        - label: liveops
+        - label: design
+        - label: all
+  - type: textarea
+    id: what
+    attributes:
+      label: What it does and why
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: "`[[knowledge]]`, `[[agents]]`, MCP servers it would need"
+  - type: textarea
+    id: triggers
+    attributes:
+      label: Trigger phrases

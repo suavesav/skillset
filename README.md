@@ -60,7 +60,7 @@ A reader (human or model) understands a file's full dependency closure from its 
 ### File-based setups
 
 ```bash
-git clone git@github.com:suavesav/skillset.git ~/skillset
+git clone https://github.com/suavesav/skillset.git ~/skillset
 
 # OpenAI Codex (projects into AGENTS.md + .skillset/)
 ~/skillset/platforms/codex/setup.sh
@@ -102,7 +102,7 @@ Each skill declares a `teams:` list in its frontmatter (`engineering`, `liveops`
 
 ## The Viewer
 
-A local web app for browsing the library the way it's meant to be read — as a linked graph, not a folder of files. It is read-only: it renders the repository and never writes to it or to anything on your machine.
+A local web app for browsing the library the way it's meant to be read — as a linked graph, not a folder of files. It is read-only: it renders the repository and never writes to it or to anything on your machine. A hosted copy is at https://suavesav.github.io/skillset/, built from `main` by GitHub Actions: static, read-only.
 
 ```bash
 cd viewer && npm install && npm run dev
@@ -117,9 +117,8 @@ Customize a skill without touching library files: put your version in `local/SKI
 
 ## Contributing
 
-1. Create or edit files in `SKILLS/`, `AGENTS/`, or `KNOWLEDGE/` per the format in `CLAUDE.md`
-2. Run `scripts/validate.sh` — it checks frontmatter, `[[link]]` resolution, and platform-agnostic rules (no hardcoded paths, no platform API syntax)
-3. Bump `VERSION` and note the change in `CHANGELOG.md`
+Issues and Discussions are open. Pull requests are not accepted yet — see
+[CONTRIBUTING.md](CONTRIBUTING.md) for why and for how to propose a skill.
 
 ## Structure
 
@@ -133,10 +132,15 @@ skillset/
 │   ├── claude-plugin/   ← plugin marketplace build (build.sh → dist/)
 │   ├── codex/           ← AGENTS.md + .skillset/ projection
 │   └── generic/         ← preamble for any file-reading AI tool
-├── viewer/          ← local web app (read-only): browse, graph
+├── viewer/          ← web app (read-only): browse, graph; hosted on GitHub Pages
 ├── scripts/         ← validate.sh / validate.py
 ├── local/           ← gitignored personal overrides
 ├── VERSION
 ├── CHANGELOG.md
 └── CLAUDE.md        ← authoring guide and format spec
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE). The demo content (Gladewick Games, its
+titles, tools, and people) is fictional.
