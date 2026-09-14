@@ -44,16 +44,6 @@ describe('buildTree', () => {
     expect(tree.map((n) => n.name)).toEqual(['AGENTS.md', '.skillset'])
   })
 
-  it('counts projected files per directory', () => {
-    const tree = buildTree([
-      { projectedPath: 'skills/a/SKILL.md', sourcePath: 'SKILLS/a.md' },
-      { projectedPath: 'skills/a/references/x.md', sourcePath: 'KNOWLEDGE/x.md' },
-      { projectedPath: 'skills/b/SKILL.md', sourcePath: 'SKILLS/b.md' }
-    ])
-    expect(find(tree, 'skills')!.count).toBe(3)
-    expect(find(tree, 'a')!.count).toBe(2)
-  })
-
   it('expands a synthesized bundle into input groups', () => {
     const tree = buildTree([
       {
@@ -76,24 +66,10 @@ describe('buildTree', () => {
     expect(bundle.children!.map((g) => g.name)).toEqual(['from platforms/', 'from SKILLS/', 'from AGENTS/'])
     const skillsGroup = bundle.children![1]
     expect(skillsGroup.kind).toBe('bundle-input-group')
-    expect(skillsGroup.count).toBe(2)
     // Concatenation order is preserved inside a group.
     expect(skillsGroup.children!.map((c) => c.name)).toEqual(['encounter-tuner.md', 'bark-writer.md'])
     expect(skillsGroup.children![0].kind).toBe('bundle-input')
     expect(skillsGroup.children![0].path).toBe('SKILLS/encounter-tuner.md')
-  })
-
-  it('does not count bundle inputs as projected files', () => {
-    const tree = buildTree([
-      {
-        projectedPath: 'out/AGENTS.md',
-        sourcePath: null,
-        synthesized: true,
-        inputs: ['SKILLS/a.md', 'SKILLS/b.md', 'SKILLS/c.md']
-      }
-    ])
-    // One projected file, not four.
-    expect(find(tree, 'out')!.count).toBe(1)
   })
 
   it('filters bundle inputs through the team closure', () => {

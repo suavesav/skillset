@@ -13,18 +13,17 @@
     >
       <span class="icon">{{ icon }}</span>
       <span class="name">{{ node.name }}</span>
-      <span v-if="node.count != null" class="count">{{ node.count }}</span>
       <!-- Badge is the disclosure control; the name still opens the file. -->
       <button
         v-if="hasInputs"
         class="inputs-badge"
         :class="{ open: expanded }"
         :aria-expanded="String(expanded)"
-        :title="expanded ? 'Hide inputs' : `Show the ${node.inputCount} files compiled into this`"
+        :title="expanded ? 'Hide inputs' : 'Show the files compiled into this'"
         @click.stop="expanded = !expanded"
         @keydown.stop
       >
-        {{ node.inputCount }} in
+        {{ expanded ? '▾' : '▸' }} inputs
       </button>
       <span v-if="node.note && !hasInputs" class="note">{{ node.note }}</span>
     </div>
@@ -102,7 +101,7 @@ li { list-style: none; }
 .row:hover { background: var(--r-surface-2); }
 .row:focus-visible { outline: 2px solid var(--r-violet); outline-offset: -2px; }
 .row.selected { background: var(--r-pine); color: #fff; }
-.row.selected .note, .row.selected .count { color: var(--r-violet-soft); }
+.row.selected .note { color: var(--r-violet-soft); }
 .row.selected .inputs-badge { background: var(--r-violet); color: var(--r-ink); border-color: transparent; }
 .row.dir { color: var(--r-pine); font-weight: 600; }
 .row.group { color: var(--r-ink-2); font-size: 11px; font-style: italic; }
@@ -111,7 +110,6 @@ li { list-style: none; }
 .icon { width: 12px; text-align: center; font-size: 11px; flex-shrink: 0; }
 .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .note { font-size: 10px; color: var(--r-muted); flex-shrink: 0; }
-.count { font-size: 10px; color: var(--r-muted); flex-shrink: 0; font-family: var(--r-mono); }
 .inputs-badge {
   flex-shrink: 0;
   font-size: 9px;
