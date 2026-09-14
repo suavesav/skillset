@@ -128,14 +128,3 @@ describe('build/projection equivalence', () => {
     expect(mismatched).toEqual([])
   }, 180_000)
 })
-
-describe('claude-code setup and projection agree', () => {
-  it('resolves wikilinks through exactly one pattern', async () => {
-    // The two sides used to disagree ([a-z-]+ vs [a-z0-9-]+), so a knowledge
-    // file with a digit was projected but never symlinked. One grep now.
-    const src = await readFile(join(REPO_ROOT, 'platforms/claude-code/setup.sh'), 'utf-8')
-    const wikilinkGreps = src.match(/grep -oE '\\\[\\\[\[[^\]]+\]\+\\\]\\\]'/g) ?? []
-    expect(wikilinkGreps.length, wikilinkGreps.join(' | ')).toBe(1)
-    expect(wikilinkGreps[0]).toContain('a-z0-9-')
-  })
-})

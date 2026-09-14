@@ -21,9 +21,9 @@ export interface LibraryFile {
   bodyLength: number
 }
 
-export type Platform = 'raw' | 'claude-code' | 'claude-plugin' | 'codex' | 'claude-desktop'
+export type Platform = 'raw' | 'claude-plugin' | 'codex'
 
-export const PLATFORMS: Platform[] = ['raw', 'claude-code', 'claude-plugin', 'codex', 'claude-desktop']
+export const PLATFORMS: Platform[] = ['raw', 'claude-plugin', 'codex']
 
 export interface ProjectionEntry {
   /** Where this file lives in the projected layout. */

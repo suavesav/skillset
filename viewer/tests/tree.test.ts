@@ -157,15 +157,6 @@ describe('buildTree against real projections', () => {
     expect(agentsMd.children!.map((g) => g.name)).toContain('from AGENTS/')
   })
 
-  it('makes the claude-desktop single-file projection browsable', async () => {
-    const files = await loadLibrary(REPO_ROOT)
-    const entries = await project('claude-desktop', REPO_ROOT, files)
-    const tree = buildTree(entries)
-    // One row; the value is entirely in the inputs.
-    expect(tree.length).toBe(1)
-    expect(tree[0].inputCount).toBe(files.length + 1)
-  })
-
   it('shows every claude-plugin plugin, not just the umbrella', async () => {
     const files = await loadLibrary(REPO_ROOT)
     const entries = await project('claude-plugin', REPO_ROOT, files)
@@ -179,7 +170,7 @@ describe('buildTree against real projections', () => {
 
   it('tree leaves and projection entries are the same set', async () => {
     const files = await loadLibrary(REPO_ROOT)
-    for (const platform of ['claude-code', 'codex', 'claude-plugin'] as const) {
+    for (const platform of ['codex', 'claude-plugin'] as const) {
       const entries = await project(platform, REPO_ROOT, files)
       const projected = entries.map((e) => e.projectedPath).sort()
       const leaves = flatten(buildTree(entries))

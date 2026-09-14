@@ -11,10 +11,8 @@ const execFileP = promisify(execFile)
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
 const SCRIPTS: Record<string, string> = {
-  'claude-code': 'platforms/claude-code/setup.sh',
   'claude-plugin': 'platforms/claude-plugin/build.sh',
-  codex: 'platforms/codex/setup.sh',
-  'claude-desktop': 'platforms/claude-desktop/setup.sh'
+  codex: 'platforms/codex/setup.sh'
 }
 
 /** Run `--emit` directly, returning the exit code rather than throwing. */
@@ -71,7 +69,6 @@ describe('--emit rejects everything outside the projection', () => {
     // Validating only the plugin name still let --emit fabricate files inside
     // it: a skipped skill, or one outside a team plugin's closure.
     for (const [platform, path] of [
-      ['claude-code', 'skills/meta/SKILL.md'],
       ['claude-plugin', 'plugins/skillset-all/skills/meta/SKILL.md'],
       ['claude-plugin', 'plugins/skillset-design/skills/desync-hunter/SKILL.md'],
       ['claude-plugin', 'plugins/skillset-design/_agents/replay-agent.md']
@@ -107,7 +104,7 @@ describe('--emit rejects everything outside the projection', () => {
 
   it('still emits every path the projection does list', { timeout: 180_000 }, async () => {
     const files = await loadLibrary(REPO_ROOT)
-    for (const platform of ['codex', 'claude-desktop'] as const) {
+    for (const platform of ['codex'] as const) {
       const entries = await project(platform, REPO_ROOT, files)
       for (const e of entries) {
         const content = await emit(platform as Platform, REPO_ROOT, e.projectedPath)
