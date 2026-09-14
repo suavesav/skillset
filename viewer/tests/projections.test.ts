@@ -8,7 +8,7 @@ import { project, describe as describePlatform, emit, emitAllSizes } from '../se
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
 /** Platforms whose projection comes from a script (i.e. everything but `raw`). */
-const PLATFORMS_WITH_SCRIPTS = ['claude-code', 'claude-plugin', 'codex', 'claude-desktop'] as const
+const PLATFORMS_WITH_SCRIPTS = ['claude-plugin', 'codex'] as const
 
 describe('project()', () => {
   it('raw is the identity mapping over the library', async () => {
@@ -18,26 +18,6 @@ describe('project()', () => {
     for (const e of entries) {
       expect(e.projectedPath).toBe(e.sourcePath)
     }
-  })
-
-  it('claude-code skips the meta skill', async () => {
-    const files = await loadLibrary(REPO_ROOT)
-    const entries = await project('claude-code', REPO_ROOT, files)
-    const skillFiles = entries.filter((e) => /^skills\/[^/]+\/SKILL\.md$/.test(e.projectedPath))
-    const names = skillFiles.map((e) => e.projectedPath.split('/')[1])
-    expect(names).not.toContain('meta')
-  })
-
-  it('claude-code includes references/ for each skill knowledge link', async () => {
-    const files = await loadLibrary(REPO_ROOT)
-    const entries = await project('claude-code', REPO_ROOT, files)
-    // encounter-tuner declares 2 knowledge files (encounter-tuning-model, telemetry-schema)
-    const encounterTunerRefs = entries.filter((e) =>
-      e.projectedPath.startsWith('skills/encounter-tuner/references/')
-    )
-    const refNames = encounterTunerRefs.map((e) => e.projectedPath.split('/').pop()!.replace('.md', ''))
-    expect(refNames).toContain('encounter-tuning-model')
-    expect(refNames).toContain('telemetry-schema')
   })
 
   it('claude-plugin skips meta and uses _agents/ prefix', async () => {
@@ -87,18 +67,9 @@ describe('project()', () => {
     expect(codexKnowledge.length).toBe(knowledgeFiles.length)
   })
 
-  it('claude-desktop emits a single synthesized context file', async () => {
-    const files = await loadLibrary(REPO_ROOT)
-    const entries = await project('claude-desktop', REPO_ROOT, files)
-    expect(entries.length).toBe(1)
-    expect(entries[0].projectedPath).toBe('skillset-context.md')
-    expect(entries[0].synthesized).toBe(true)
-    expect(entries[0].sourcePath).toBeNull()
-  })
-
   it('all platforms parse without empty/malformed rows', async () => {
     const files = await loadLibrary(REPO_ROOT)
-    for (const platform of ['claude-code', 'claude-plugin', 'codex', 'claude-desktop'] as const) {
+    for (const platform of PLATFORMS_WITH_SCRIPTS) {
       const entries = await project(platform, REPO_ROOT, files)
       for (const e of entries) {
         expect(e.projectedPath).toBeTruthy()
@@ -110,7 +81,7 @@ describe('project()', () => {
   it('source paths reference real library files when set', async () => {
     const files = await loadLibrary(REPO_ROOT)
     const knownPaths = new Set(files.map((f) => f.path))
-    for (const platform of ['claude-code', 'claude-plugin', 'codex'] as const) {
+    for (const platform of PLATFORMS_WITH_SCRIPTS) {
       const entries = await project(platform, REPO_ROOT, files)
       for (const e of entries) {
         if (!e.sourcePath) continue
@@ -142,24 +113,11 @@ describe('projection contract: inputs', () => {
     for (const a of agents) expect(agentsMd.inputs).toContain(a.path)
   })
 
-  it("claude-desktop's context file reports knowledge as well", async () => {
-    const files = await loadLibrary(REPO_ROOT)
-    const [entry] = await project('claude-desktop', REPO_ROOT, files)
-    // Everything is flattened, so every library file is an input.
-    expect(entry.inputs?.length).toBe(files.length + 1) // + preamble
-    for (const f of files) expect(entry.inputs).toContain(f.path)
-  })
-
   it('inputs are in concatenation order: preamble first', async () => {
     const files = await loadLibrary(REPO_ROOT)
-    for (const [platform, preamble] of [
-      ['codex', 'platforms/codex/preamble.md'],
-      ['claude-desktop', 'platforms/claude-desktop/preamble.md']
-    ] as const) {
-      const entries = await project(platform, REPO_ROOT, files)
-      const bundle = entries.find((e) => e.inputs?.length)!
-      expect(bundle.inputs![0]).toBe(preamble)
-    }
+    const entries = await project('codex', REPO_ROOT, files)
+    const bundle = entries.find((e) => e.inputs?.length)!
+    expect(bundle.inputs![0]).toBe('platforms/codex/preamble.md')
   })
 
   it('every input names a file that exists', { timeout: 60_000 }, async () => {
@@ -203,8 +161,7 @@ describe('projection contract: describe()', () => {
       // line would satisfy a pure length check.
       expect(seen.has(text), `${platform} repeats another platform's text`).toBe(false)
       seen.add(text)
-      const artefact = { 'claude-code': 'skills/', 'claude-plugin': 'plugin',
-                         codex: 'AGENTS.md', 'claude-desktop': 'skillset-context.md' }[platform]
+      const artefact = { 'claude-plugin': 'plugin', codex: 'AGENTS.md' }[platform]
       expect(text, platform).toContain(artefact)
     }
   })
@@ -224,11 +181,13 @@ describe('projection contract: emit()', () => {
     }
   })
 
-  it('compiles a claude-code SKILL.md as preamble + body', { timeout: 60_000 }, async () => {
-    const content = await emit('claude-code', REPO_ROOT, 'skills/encounter-tuner/SKILL.md')
-    const preamble = readFileSync(resolve(REPO_ROOT, 'platforms/claude-code/preamble.md'), 'utf-8')
-    expect(content.startsWith(preamble)).toBe(true)
-    expect(content).toContain('name: encounter-tuner')
+  it('compiles a claude-plugin SKILL.md as preamble + body', { timeout: 60_000 }, async () => {
+    const content = await emit('claude-plugin', REPO_ROOT, 'plugins/skillset-all/skills/encounter-tuner/SKILL.md')
+    const preamble = readFileSync(resolve(REPO_ROOT, 'platforms/claude-plugin/preamble.md'), 'utf-8')
+    expect(content).toContain(preamble)
+    // Frontmatter is rewritten to plugin format: description only.
+    expect(content.startsWith('---\ndescription:')).toBe(true)
+    expect(content).not.toContain('name: encounter-tuner')
   })
 
   it('strips frontmatter from claude-plugin references', { timeout: 60_000 }, async () => {

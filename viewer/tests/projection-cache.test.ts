@@ -88,7 +88,7 @@ describe('createProjectionCache', () => {
   it('keys separately per platform', async () => {
     const cache = createProjectionCache<string>()
     expect(await cache.get('codex', 'r1', async () => 'a')).toBe('a')
-    expect(await cache.get('claude-code', 'r1', async () => 'b')).toBe('b')
+    expect(await cache.get('claude-plugin', 'r1', async () => 'b')).toBe('b')
     expect(await cache.get('codex', 'r1', async () => 'never')).toBe('a')
   })
 

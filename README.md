@@ -1,6 +1,6 @@
 # skillset
 
-A shareable, version-controlled library of AI skills, agents, and knowledge for Gladewick Games (a fictional game studio — this repo is a demonstration of the library *pattern*, populated with dummy content). Works with Claude Code, Claude Desktop, OpenAI Codex, and any AI tool that can read files.
+A shareable, version-controlled library of AI skills, agents, and knowledge for Gladewick Games (a fictional game studio — this repo is a demonstration of the library *pattern*, populated with dummy content). Works with Claude Code (via plugin), OpenAI Codex, and any AI tool that can read files.
 
 ## The Core Concept
 
@@ -61,12 +61,6 @@ A reader (human or model) understands a file's full dependency closure from its 
 
 ```bash
 git clone git@github.com:suavesav/skillset.git ~/skillset
-
-# Claude Code (symlinks into ~/.claude/)
-~/skillset/platforms/claude-code/setup.sh
-
-# Claude Desktop (bundles everything into one context file)
-~/skillset/platforms/claude-desktop/setup.sh
 
 # OpenAI Codex (projects into AGENTS.md + .skillset/)
 ~/skillset/platforms/codex/setup.sh
@@ -136,9 +130,7 @@ skillset/
 ├── KNOWLEDGE/       ← reference files (domain knowledge)
 ├── ASSETS/          ← runnable files skills execute, never read
 ├── platforms/       ← platform-specific projection
-│   ├── claude-code/     ← file-based setup (symlinks into ~/.claude/)
 │   ├── claude-plugin/   ← plugin marketplace build (build.sh → dist/)
-│   ├── claude-desktop/  ← single bundled context file
 │   ├── codex/           ← AGENTS.md + .skillset/ projection
 │   └── generic/         ← preamble for any file-reading AI tool
 ├── viewer/          ← local web app (read-only): browse, graph

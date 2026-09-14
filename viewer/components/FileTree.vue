@@ -4,10 +4,8 @@
       <label>View:</label>
       <select v-model="settings.platform">
         <option value="raw">raw (repo)</option>
-        <option value="claude-code">claude-code</option>
         <option value="claude-plugin">claude-plugin</option>
         <option value="codex">codex</option>
-        <option value="claude-desktop">claude-desktop</option>
       </select>
     </div>
 

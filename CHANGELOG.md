@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0 — 2026-08-27
+
+- Removed the `claude-code` and `claude-desktop` platform projectors. Claude skills are distributed via the plugin marketplace (`claude-plugin`); remaining platform projectors are `claude-plugin`, `codex`, and `generic`. The viewer's platform selector (`raw`, `claude-plugin`, `codex`) and its tests now cover only the scripted ones.
+
 ## 0.3.0 — 2026-08-20
 
 - Viewer is read-only and repository-only. Removed the contribution path (submit-for-review modal, preview/submit API routes, GitHub App and token plumbing, submit guards, PR badges) and then the Diff module itself (drift APIs, local-folder picker, `~/.claude` inventory reader, diff renderer, and the `claudeHome` runtime config). The viewer now reads nothing outside this repository: Files and Graph only.

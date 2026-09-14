@@ -8,10 +8,8 @@ const execFileP = promisify(execFile)
 
 /** The script implementing each platform's projection, relative to repo root. */
 const SCRIPTS: Record<Exclude<Platform, 'raw'>, string> = {
-  'claude-code': 'platforms/claude-code/setup.sh',
   'claude-plugin': 'platforms/claude-plugin/build.sh',
-  'codex': 'platforms/codex/setup.sh',
-  'claude-desktop': 'platforms/claude-desktop/setup.sh'
+  'codex': 'platforms/codex/setup.sh'
 }
 
 /** ASCII record separator — frames files in `--emit-all` output. */
