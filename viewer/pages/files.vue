@@ -24,7 +24,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { ProjectionEntry, ProjectionResponse } from '../shared/types'
+import type { Platform, ProjectionEntry, ProjectionResponse } from '../shared/types'
+import { apiFiles, apiProjection } from '../shared/api'
 import type { SelectedEntry } from '../components/FileTree.vue'
 import { useViewerSettings } from '../composables/useViewerSettings'
 
@@ -50,7 +51,7 @@ const focusName = computed(() => {
 })
 
 async function loadNameIndex() {
-  const { files } = await $fetch<{ files: { name: string; path: string }[] }>('/api/files')
+  const { files } = await $fetch<{ files: { name: string; path: string }[] }>(apiFiles())
   const map: Record<string, string> = {}
   for (const f of files) map[f.name] = f.path
   namesToPath.value = map
@@ -61,12 +62,12 @@ async function loadNameIndex() {
 let indexSeq = 0
 
 /** Index the active platform's projection by projected path. */
-async function loadProjectionIndex(platform: string) {
+async function loadProjectionIndex(platform: Platform) {
   const seq = ++indexSeq
   entriesByPath.value = {}
   if (platform === 'raw') return
   try {
-    const res = await $fetch<ProjectionResponse>(`/api/projection?platform=${platform}`)
+    const res = await $fetch<ProjectionResponse>(apiProjection(platform))
     if (seq !== indexSeq) return
     const map: Record<string, ProjectionEntry> = {}
     for (const e of res.entries) map[e.projectedPath] = e

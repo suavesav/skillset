@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
-import { project } from './projections'
+import { emitAll, project, type EmittedFile } from './projections'
 import type { LibraryFile, Platform, ProjectionEntry } from '../../shared/types'
 
 /** Directories whose contents can change what a projection reports. */
@@ -76,4 +76,18 @@ export async function projectionOf(
   return projections.get(platform, rev, async () => ({
     entries: await project(platform, repoRoot, files)
   }))
+}
+
+const compiled = createProjectionCache<Map<string, EmittedFile>>()
+
+/**
+ * The whole compiled projection, from one `--emit-all`. Prerendering asks for
+ * every projected file in turn; without this each one would be its own build.
+ */
+export async function compiledOf(
+  platform: Platform,
+  repoRoot: string
+): Promise<Map<string, EmittedFile>> {
+  const rev = await libraryRevision(repoRoot)
+  return compiled.get(platform, rev, () => emitAll(platform, repoRoot))
 }

@@ -13,6 +13,7 @@
       </select>
       <button type="button" class="kbd-hint" title="Quick switcher" aria-label="Open quick switcher" @click="quickSwitcher?.open()">⌘K</button>
       <SettingsPopover />
+      <a class="gh-link" href="https://github.com/suavesav/skillset" target="_blank" rel="noopener noreferrer">GitHub</a>
     </header>
     <main>
       <NuxtPage />

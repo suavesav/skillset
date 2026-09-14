@@ -54,9 +54,11 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
-import type { SearchMatch, SearchResponse } from '../shared/types'
+import type { SearchMatch } from '../shared/types'
+import { useSearchIndex } from '../composables/useSearchIndex'
 
 const router = useRouter()
+const { search } = useSearchIndex()
 const open = ref(false)
 const q = ref('')
 const matches = ref<SearchMatch[]>([])
@@ -79,9 +81,9 @@ async function run(query: string) {
   }
   pending.value = true
   try {
-    const res = await $fetch<SearchResponse>(`/api/search?q=${encodeURIComponent(query)}`)
+    const res = await search(query)
     if (seq === reqSeq) {
-      matches.value = res.matches
+      matches.value = res
       highlight.value = 0
     }
   } finally {

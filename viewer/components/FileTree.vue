@@ -44,6 +44,7 @@
 import { ref, computed, watch } from 'vue'
 import type { ProjectionEntry, ProjectionResponse } from '../shared/types'
 import { buildTree, type TreeNodeData } from '../shared/tree'
+import { apiProjection } from '../shared/api'
 import { useTeamFilter } from '../composables/useTeamFilter'
 import { useViewerSettings } from '../composables/useViewerSettings'
 
@@ -122,7 +123,7 @@ async function load() {
   pending.value = true
   error.value = ''
   try {
-    const res = await $fetch<ProjectionResponse>(`/api/projection?platform=${settings.platform}`)
+    const res = await $fetch<ProjectionResponse>(apiProjection(settings.platform))
     if (seq !== loadSeq) return
     entries.value = res.entries
   } catch {

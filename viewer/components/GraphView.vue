@@ -18,6 +18,7 @@ import { DataSet } from 'vis-data/peer'
 import { Network } from 'vis-network/peer'
 import 'vis-network/styles/vis-network.css'
 import type { FilesResponse } from '../shared/types'
+import { apiFiles } from '../shared/api'
 import { useTeamFilter } from '../composables/useTeamFilter'
 
 const props = defineProps<{
@@ -63,7 +64,7 @@ async function build() {
 }
 
 async function buildGraph() {
-  const { files } = await $fetch<FilesResponse>('/api/files')
+  const { files } = await $fetch<FilesResponse>(apiFiles())
 
   nodes = new DataSet<any>(
     files.map((f) => ({

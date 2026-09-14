@@ -3,7 +3,7 @@ import { resolve, dirname } from 'node:path'
 import { existsSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { loadLibrary } from '../server/utils/library'
-import { project, describe as describePlatform, emit, emitAllSizes } from '../server/utils/projections'
+import { project, describe as describePlatform, emit, emitAll, emitAllSizes } from '../server/utils/projections'
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
@@ -225,5 +225,26 @@ describe('projection contract: emitAllSizes()', () => {
     const sizes = await emitAllSizes('codex', REPO_ROOT, files)
     const content = await emit('codex', REPO_ROOT, 'AGENTS.md')
     expect(sizes['AGENTS.md']).toBe(Buffer.byteLength(content))
+  })
+})
+
+describe('projection contract: emitAll()', () => {
+  it('compiles exactly the files --list reports for codex', { timeout: 60_000 }, async () => {
+    const files = await loadLibrary(REPO_ROOT)
+    const entries = await project('codex', REPO_ROOT, files)
+    const compiled = await emitAll('codex', REPO_ROOT)
+    expect([...compiled.keys()].sort()).toEqual(entries.map((e) => e.projectedPath).sort())
+  })
+
+  it('a compiled file is identical to emitting it alone', { timeout: 60_000 }, async () => {
+    const compiled = await emitAll('codex', REPO_ROOT)
+    const single = await emit('codex', REPO_ROOT, 'AGENTS.md')
+    const hit = compiled.get('AGENTS.md')!
+    expect(hit.content).toBe(single)
+    expect(hit.bytes).toBe(Buffer.byteLength(single))
+  })
+
+  it('raw has no compiled form', async () => {
+    await expect(emitAll('raw', REPO_ROOT)).rejects.toThrow()
   })
 })

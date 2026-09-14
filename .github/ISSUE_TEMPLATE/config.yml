@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and open-ended ideas
+    url: https://github.com/suavesav/skillset/discussions
+    about: For questions and open-ended ideas that don't fit a bug report or a concrete idea proposal.

@@ -30,9 +30,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import type { SearchResponse } from '../shared/types'
+import { useSearchIndex } from '../composables/useSearchIndex'
 
 const router = useRouter()
+const { search } = useSearchIndex()
 const sidebarOpen = ref(false)
 const graphQuery = ref('')
 const matchedNames = ref<Set<string> | null>(null)
@@ -49,9 +50,9 @@ watch(graphQuery, (val) => {
     return
   }
   debounce = setTimeout(async () => {
-    const res = await $fetch<SearchResponse>(`/api/search?q=${encodeURIComponent(q)}`)
+    const matches = await search(q)
     if (seq === reqSeq) {
-      matchedNames.value = new Set(res.matches.map((m) => m.name))
+      matchedNames.value = new Set(matches.map((m) => m.name))
     }
   }, 100)
 })

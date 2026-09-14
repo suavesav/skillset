@@ -227,7 +227,7 @@ emit_plugin_json() {
   "version": "$VERSION",
   "description": "$2",
   "author": {
-    "name": "Gladewick Games"
+    "name": "suavesav"
   },
   "skills": ["./skills/"]
 }
@@ -348,7 +348,7 @@ emit_marketplace_json() {
 {
   "name": "skillset",
   "owner": {
-    "name": "Gladewick Games"
+    "name": "suavesav"
   },
   "metadata": {
     "description": "AI skills for the Gladewick Games studio",
