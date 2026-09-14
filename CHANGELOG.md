@@ -2,7 +2,7 @@
 
 ## 0.4.0 — 2026-08-27
 
-- Removed the `claude-code` and `claude-desktop` platform projectors. Claude skills are distributed via the plugin marketplace (`claude-plugin`); remaining platforms are `claude-plugin`, `codex`, and `generic`. The viewer's platform selector, projection scripts, and tests now cover only those.
+- Removed the `claude-code` and `claude-desktop` platform projectors. Claude skills are distributed via the plugin marketplace (`claude-plugin`); remaining platform projectors are `claude-plugin`, `codex`, and `generic`. The viewer's platform selector (`raw`, `claude-plugin`, `codex`) and its tests now cover only the scripted ones.
 
 ## 0.3.0 — 2026-08-20
 
