@@ -1,12 +1,10 @@
 name: CI
 
 # Test-only. Runs the library validator and the viewer's tests and static
-# build on pull requests, so Dependabot bumps and branch pushes get a signal
-# before they reach main. Deploys nothing and holds no secrets.
+# build on pull requests, so Dependabot bumps get a signal before they reach
+# main. Deploys nothing and holds no secrets.
 on:
   pull_request:
-  push:
-    branches-ignore: [main]
 
 permissions:
   contents: read

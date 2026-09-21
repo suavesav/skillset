@@ -5,7 +5,20 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
+    groups:
+      # vis-network and vis-data share a vis-util peer and must move together.
+      vis:
+        patterns: ["vis-*"]
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      # vitest 4+ needs vite 6+; nuxt 3.13 pins vite 5. Lift when nuxt moves.
+      - dependency-name: vitest
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
