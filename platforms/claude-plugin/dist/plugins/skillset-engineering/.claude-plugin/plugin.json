@@ -1,6 +1,6 @@
 {
   "name": "skillset-engineering",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Gladewick engineering skills — frame budgets, desyncs, save migrations, shard capacity",
   "author": {
     "name": "suavesav"

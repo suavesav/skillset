@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0 — 2026-09-20
+
+- Two new team bundles. `skillset-marketing`: `campaign-planner`, `patch-notes-writer`, `ua-performance-review`, plus `store-page-writer`, `community-pulse` and `platform-pitch-builder` shared with other teams. `skillset-sales`: `platform-pitch-builder`, `deal-desk`, `revenue-brief`. New agents `beacon-agent` (UA and store analytics) and `dealbook-agent` (partner and deal CRM); new knowledge `marketing-calendar`, `patch-notes-format`, `ua-benchmarks`, `platform-partner-playbook`, `deal-policy`, `revenue-model`.
+- Three org-wide skills tagged `all`, so every plugin carries them: `weekly-update-writer`, `meeting-synthesizer`, `studio-navigator`. New knowledge `studio-comms-format` and `studio-directory`.
+- `mcp-registry` lists seven servers: added `beacon-ua` and `dealbook`. `studio-context` lists five teams and the marketing and sales ownership rows.
+- `.github/workflows/ci.yml` runs the validator, `build.sh --list`, the viewer tests and the static build on pull requests and non-main pushes. It deploys nothing.
+
 ## 0.5.0 — 2026-09-14
 
 - Public release under the MIT license. Added `LICENSE`, `CONTRIBUTING.md` (issues and Discussions open, pull requests not accepted), `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue forms, a PR template, Dependabot config, and a workflow that closes pull requests from other accounts.

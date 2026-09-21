@@ -5,6 +5,7 @@ description: >
   Write platform-storefront copy and screenshot shot-lists for Emberwake and
   Drift Harbor — inside each platform's limits, in the right title voice.
 teams:
+  - marketing
   - design
   - liveops
 knowledge:

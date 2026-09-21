@@ -1,0 +1,9 @@
+{
+  "name": "skillset-sales",
+  "version": "0.6.0",
+  "description": "Gladewick sales skills — platform pitches, deal desk, revenue brief",
+  "author": {
+    "name": "suavesav"
+  },
+  "skills": ["./skills/"]
+}

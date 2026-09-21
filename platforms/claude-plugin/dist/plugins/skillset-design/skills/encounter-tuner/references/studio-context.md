@@ -1,7 +1,7 @@
 
 # Studio Context
 
-Gladewick Games, ~120 people, two live titles. Teams: engineering, liveops, design.
+Gladewick Games, ~120 people, two live titles. Teams: engineering, liveops, design, marketing, sales. Remits, rituals, and escalation paths are in [[studio-directory]].
 
 ## Titles
 
@@ -20,6 +20,10 @@ Both run on the in-house Kiln Engine (C++ core, Lua gameplay scripting).
 | Economy tuning, seasons, events | liveops   |
 | Quests, encounters, UX        | design      |
 | Telemetry pipeline (Quill)    | engineering (liveops owns the metric definitions) |
+| Store pages, campaigns, creator program, UA | marketing |
+| Patch notes                   | marketing (liveops supplies the release manifest) |
+| Platform partnerships, deals, pricing, bundles | sales |
+| Revenue read                  | sales (liveops owns the in-game economy levers) |
 
 ## Season Calendar (Emberwake)
 
