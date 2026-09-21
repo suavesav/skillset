@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "AI skills for the Gladewick Games studio",
-    "version": "0.5.0"
+    "version": "0.6.0"
   },
   "plugins": [
     {
       "name": "skillset-all",
       "source": "./plugins/skillset-all",
       "description": "Full Gladewick skill suite — every skill (engineering, live-ops, design)",
-      "version": "0.5.0"
+      "version": "0.6.0"
     },
     {
       "name": "skillset-design",
@@ -20,7 +20,7 @@
       "description": "Gladewick design skills — encounters, loot, quests, dialogue, accessibility",
       "category": "design",
       "tags": ["encounters","loot","quests","dialogue","accessibility"],
-      "version": "0.5.0"
+      "version": "0.6.0"
     },
     {
       "name": "skillset-engineering",
@@ -28,7 +28,7 @@
       "description": "Gladewick engineering skills — frame budgets, desyncs, save migrations, shard capacity",
       "category": "engineering",
       "tags": ["performance","netcode","saves","capacity","engine"],
-      "version": "0.5.0"
+      "version": "0.6.0"
     },
     {
       "name": "skillset-liveops",
@@ -36,7 +36,23 @@
       "description": "Gladewick live-ops skills — launch runbooks, matchmaking, community pulse, daily briefings",
       "category": "liveops",
       "tags": ["launch","matchmaking","community","capacity","briefing"],
-      "version": "0.5.0"
+      "version": "0.6.0"
+    },
+    {
+      "name": "skillset-marketing",
+      "source": "./plugins/skillset-marketing",
+      "description": "Gladewick marketing skills — campaign beats, patch notes, store pages, UA review, platform pitches",
+      "category": "marketing",
+      "tags": ["campaigns","patch-notes","store","ua","featuring"],
+      "version": "0.6.0"
+    },
+    {
+      "name": "skillset-sales",
+      "source": "./plugins/skillset-sales",
+      "description": "Gladewick sales skills — platform pitches, deal desk, revenue brief",
+      "category": "sales",
+      "tags": ["partnerships","deals","pricing","revenue","featuring"],
+      "version": "0.6.0"
     }
   ]
 }

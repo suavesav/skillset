@@ -21,7 +21,7 @@ SKIP_SKILLS="meta"
 
 # Recognized team names. Every skill's `teams:` must draw from these (or `all`).
 # Adding a team means listing it here AND giving it display metadata in plugin_meta().
-KNOWN_TEAMS="engineering liveops design"
+KNOWN_TEAMS="engineering liveops design marketing sales"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -317,6 +317,12 @@ plugin_meta() {
         design)
             DESC="Gladewick design skills — encounters, loot, quests, dialogue, accessibility"
             CATEGORY="design"; TAGS='["encounters","loot","quests","dialogue","accessibility"]' ;;
+        marketing)
+            DESC="Gladewick marketing skills — campaign beats, patch notes, store pages, UA review, platform pitches"
+            CATEGORY="marketing"; TAGS='["campaigns","patch-notes","store","ua","featuring"]' ;;
+        sales)
+            DESC="Gladewick sales skills — platform pitches, deal desk, revenue brief"
+            CATEGORY="sales"; TAGS='["partnerships","deals","pricing","revenue","featuring"]' ;;
         *)
             DESC="Gladewick $1 skills"; CATEGORY="$1"; TAGS='[]' ;;
     esac

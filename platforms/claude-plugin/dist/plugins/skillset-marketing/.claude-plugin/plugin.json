@@ -1,0 +1,9 @@
+{
+  "name": "skillset-marketing",
+  "version": "0.6.0",
+  "description": "Gladewick marketing skills — campaign beats, patch notes, store pages, UA review, platform pitches",
+  "author": {
+    "name": "suavesav"
+  },
+  "skills": ["./skills/"]
+}

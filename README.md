@@ -55,7 +55,7 @@ A reader (human or model) understands a file's full dependency closure from its 
 /plugin install skillset-all@skillset
 ```
 
-`skillset-all` is the full suite. To install only one team's skills, use `skillset-engineering`, `skillset-liveops`, or `skillset-design`.
+`skillset-all` is the full suite. To install only one team's skills, use `skillset-engineering`, `skillset-liveops`, `skillset-design`, `skillset-marketing`, or `skillset-sales`.
 
 ### File-based setups
 
@@ -72,31 +72,44 @@ git clone https://github.com/suavesav/skillset.git ~/skillset
 |-------|-------------|------------|
 | `accessibility-auditor` | Audit screens against the studio accessibility checklist | — |
 | `bark-writer` | Ambient NPC dialogue in the correct title voice, VO-length-safe | — |
+| `campaign-planner` | Dated marketing beat sheet for a season or content drop, codename-safe | — |
 | `community-pulse` | Digest player discussion into volume-weighted themes | greenroom |
+| `deal-desk` | Evaluate a partnership, bundle, or licensing proposal against the deal policy | dealbook |
 | `desync-hunter` | Locate and classify co-op desyncs from replay bundles | kiln-replay |
 | `encounter-tuner` | Quantify fight difficulty, sim candidate changes, output a tuning table | quill-telemetry |
 | `frame-budget-auditor` | Audit perf captures against per-platform frame budgets | — |
 | `liveops-briefing` | Daily health brief for both titles, anomalies first | quill-telemetry, crashlens, opsdeck |
 | `loot-table-designer` | Drop tables with pity math, sim-verified perceived odds | — |
 | `matchmaking-analyst` | Queue-time vs match-quality trade-offs inside policy | quill-telemetry |
+| `meeting-synthesizer` | Transcript or notes to decisions, owned actions, open questions | — |
+| `patch-notes-writer` | Player-facing patch notes from a release manifest, in title voice | — |
+| `platform-pitch-builder` | Storefront featuring pitch with asset checklist and prior featuring history | dealbook |
 | `playtest-synthesizer` | Turn raw playtest notes into ranked, evidence-counted findings | — |
 | `quest-scripter` | Draft Kiln Lua quest logic from a design brief, house patterns | — |
+| `revenue-brief` | Monthly bookings vs plan for both titles, drivers named, nothing smoothed | quill-telemetry, dealbook |
 | `save-migration-planner` | Plan save-schema migrations and the compatibility test matrix | — |
 | `season-launch-captain` | Run the season go/no-go checklist with evidence per item | opsdeck |
 | `shard-capacity-planner` | Forecast shard fleet for launches from the capacity model | opsdeck |
 | `store-page-writer` | Storefront copy and shot lists inside platform rules | — |
+| `studio-navigator` | Who owns what, what season it is, which server has the data, source cited | — |
+| `ua-performance-review` | Drift Harbor UA by channel vs benchmarks, scale/hold/cut per channel | beacon-ua, quill-telemetry |
+| `weekly-update-writer` | A week's work in the studio update format: shipped, in progress, blocked, next | — |
 | `meta` | Library self-management — pull, status, drafts (repo clone only) | — |
 
 Agents (`AGENTS/`) are the workers these skills dispatch to; knowledge (`KNOWLEDGE/`) holds the schemas, conventions, and studio context they load. `KNOWLEDGE/mcp-registry.md` documents how to configure every MCP server the library references.
 
 ## Team Plugins
 
-Each skill declares a `teams:` list in its frontmatter (`engineering`, `liveops`, `design`, or `all`). The plugin build (`platforms/claude-plugin/build.sh`) emits **one plugin per team** plus the everything-plugin:
+Each skill declares a `teams:` list in its frontmatter (`engineering`, `liveops`, `design`, `marketing`, `sales`, or `all`). The plugin build (`platforms/claude-plugin/build.sh`) emits **one plugin per team** plus the everything-plugin:
 
 - `skillset-all` — every skill
 - `skillset-engineering` — frame budgets, desyncs, save migrations, shard capacity
 - `skillset-liveops` — launch runbooks, matchmaking, community pulse, daily briefings
 - `skillset-design` — encounters, loot, quests, dialogue, accessibility
+- `skillset-marketing` — campaign beats, patch notes, store pages, UA review, platform pitches
+- `skillset-sales` — platform pitches, deal desk, revenue brief
+
+Skills tagged `all` (weekly updates, meeting notes, the studio navigator) ship in every plugin. They are the layer the whole studio shares.
 
 `teams:` is many-to-many — a skill useful to several teams lists them all. A team plugin ships only the agents and knowledge its skills **transitively reference** via the `[[link]]` graph, so installing `skillset-design` doesn't drag along the replay-analysis machinery. The build also generates a `plugin.json` per plugin and a single `marketplace.json` at the repo root, which is what `/plugin marketplace add` reads.
 

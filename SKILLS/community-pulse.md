@@ -6,6 +6,7 @@ description: >
   saying, how large each camp is, and what needs an official response.
 teams:
   - liveops
+  - marketing
 knowledge:
   - "[[community-sources]]"
   - "[[studio-context]]"
