@@ -9,7 +9,7 @@ export interface ViewerSettings {
 
 const STORAGE_KEY = 'skillset:viewer-settings'
 const DEFAULTS: ViewerSettings = {
-  showGraph: false,
+  showGraph: true,
   platform: 'raw'
 }
 
