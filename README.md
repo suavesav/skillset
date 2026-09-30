@@ -2,6 +2,9 @@
 
 A shareable, version-controlled library of AI skills, agents, and knowledge for Gladewick Games (a fictional game studio — this repo is a demonstration of the library *pattern*, populated with dummy content). Works with Claude Code (via plugin), OpenAI Codex, and any AI tool that can read files.
 
+https://github.com/user-attachments/assets/bc6ad413-dff4-4d51-8ab5-11557faac3c9
+
+
 ## The Core Concept
 
 Most AI "skill" setups are platform-specific: a Claude Code skill can't be read by Codex, a Desktop project prompt can't dispatch subagents, and knowledge gets copy-pasted between them until the copies drift. skillset inverts this: the library is **plain markdown files with YAML frontmatter**, written once in platform-neutral language, and thin per-platform **projectors** compile them into whatever each tool expects.
